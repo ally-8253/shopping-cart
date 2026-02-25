@@ -1,5 +1,7 @@
 <script setup>
   import { ref, computed, onUpdated, onBeforeMount } from 'vue'
+  import BasketTable from './components/BasketTable.vue';
+  import BasketTableSummary from './components/BasketTableSummary.vue';
 
   const basket = ref([
     {
@@ -43,11 +45,6 @@
     return price.toFixed(2);
   })
 
-  const tax = computed(() => {
-    const taxValue = totalPrice.value / 10;
-    return taxValue.toFixed(2);
-  })
-
   const decreaseItemQuantity = (item) => {
     item.quantity--;
   }
@@ -58,10 +55,6 @@
 
   const removeItem = (index) => {
     basket.value.splice(index, 1)
-  }
-
-  const getItemSubtotal = (item) => {
-    return (item.quantity * item.price).toFixed(2)
   }
 
   onBeforeMount(() => {
@@ -89,73 +82,73 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody class="basket-table__body">
-          <tr v-for="(item, index) in basket" :key="item.id">
-            <td>
-              <div class="basket-item">
-                <div class="basket-item__image">
-                  <img :src="item.imageUrl" :alt="item.name" />
-                </div>
-                <div class="basket-item__info">
-                  <h2 class="basket-item__info-h2">{{ item.name }}</h2>
-                  <p class="basket-item__info-p">Color: {{ item.color }}</p>
-                  <p class="basket-item__info-p">Size: {{  item.size }}</p>
-                </div>
-              </div>
-            </td>
-            <td>
-              <p class="basket-item__price">${{ Number(item.price).toFixed(2) }}</p>
-            </td>
-            <td>
-              <div class="basket-item__quantity">
-                <button :disabled="item.quantity === 1" @click="decreaseItemQuantity(item)" class="quantity-button">–</button>
-                <input type="number" :value="item.quantity" min="1" />
-                <button @click="increaseItemQuantity(item)" class="quantity-button">+</button>
-              </div>
-            </td>
-            <td>
-              <p class="basket-item__price">${{ getItemSubtotal(item) }}</p>
-            </td>
-            <td>
-              <button @click="removeItem(index)" class="btn btn-delete" aria-label="Удалить">
-                <svg
-                  class="w-6 h-6 text-gray-800 dark:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
-                  />
-                </svg>
-              </button>
-            </td>
-          </tr>
 
-          <tr v-if="basket.length">
-            <td colspan="5">
-              <div class="basket-table__summary">
-                <p class="basket-table__total">Total <b>${{ totalPrice }}</b></p>
-                <p>Tax ${{ tax }}</p>
-              </div>
-            </td>
-          </tr>
+          <tbody class="basket-table__body">
+            <BasketTable
+              :basket = "basket"
+              @decrease-item-quantity="decreaseItemQuantity"
+              @increase-item-quantity="increaseItemQuantity"
+              @remove-item="removeItem"
+            />
 
-          <tr v-else>
+            <tr v-if="basket.length">
             <td colspan="5">
-              <p class="basket-table__empty">No items</p>
+              <BasketTableSummary
+                :total-price="totalPrice"
+              />
             </td>
-          </tr>
+            </tr>
+
+            <tr v-else>
+            <td colspan="5">
+                <p class="basket-table__empty">No items</p>
+            </td>
+            </tr>
         </tbody>
       </table>
     </div>
 </template>
 
-<style src="./App.css"></style>
+<style scoped>
+  .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+}
+
+.basket-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.basket-table__header {
+  background-color: #3c4242;
+  color: #fff;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.basket-table__header th {
+  padding: 2rem 1rem;
+  font-weight: 400;
+  text-align: center;
+  border: 0;
+}
+
+.basket-table__header th:first-child {
+  text-align: left;
+  padding-left: 5rem;
+}
+
+.basket-table__header th:last-child {
+  padding-right: 5rem;
+}
+
+
+.basket-table__empty {
+  text-align: center;
+  color: #a7a7a7;
+}
+
+
+</style>
