@@ -1,7 +1,6 @@
 <script setup>
   import { ref, computed, onUpdated, onBeforeMount } from 'vue'
   import BasketTable from './components/BasketTable.vue';
-  import BasketTableSummary from './components/BasketTableSummary.vue';
 
   const basket = ref([
     {
@@ -33,18 +32,6 @@
     },
   ])
 
-  const totalPrice = computed(() => {
-    let price = 0;
-
-    for (let i = 0; i < basket.value.length; i++) {
-      const subtotal = basket.value[i].quantity * basket.value[i].price;
-
-      price += subtotal;
-    }
-
-    return price.toFixed(2);
-  })
-
   const decreaseItemQuantity = (item) => {
     item.quantity--;
   }
@@ -72,40 +59,13 @@
 
 <template>
     <div class="container basket">
-      <table class="basket-table">
-        <thead class="basket-table__header">
-          <tr>
-            <th>Product Details</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Subtotal</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-          <tbody class="basket-table__body">
-            <BasketTable
-              :basket = "basket"
-              @decrease-item-quantity="decreaseItemQuantity"
-              @increase-item-quantity="increaseItemQuantity"
-              @remove-item="removeItem"
-            />
-
-            <tr v-if="basket.length">
-            <td colspan="5">
-              <BasketTableSummary
-                :total-price="totalPrice"
-              />
-            </td>
-            </tr>
-
-            <tr v-else>
-            <td colspan="5">
-                <p class="basket-table__empty">No items</p>
-            </td>
-            </tr>
-        </tbody>
-      </table>
+      <BasketTable
+        :basket = "basket"
+        :total-price="totalPrice"
+        @decrease-item-quantity="decreaseItemQuantity"
+        @increase-item-quantity="increaseItemQuantity"
+        @remove-item="removeItem"
+      />
     </div>
 </template>
 
@@ -115,40 +75,4 @@
   margin: 0 auto;
   background-color: #fff;
 }
-
-.basket-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.basket-table__header {
-  background-color: #3c4242;
-  color: #fff;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-.basket-table__header th {
-  padding: 2rem 1rem;
-  font-weight: 400;
-  text-align: center;
-  border: 0;
-}
-
-.basket-table__header th:first-child {
-  text-align: left;
-  padding-left: 5rem;
-}
-
-.basket-table__header th:last-child {
-  padding-right: 5rem;
-}
-
-
-.basket-table__empty {
-  text-align: center;
-  color: #a7a7a7;
-}
-
-
 </style>

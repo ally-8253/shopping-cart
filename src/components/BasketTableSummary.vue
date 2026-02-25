@@ -15,10 +15,14 @@
 </script>
 
 <template>
-    <div class="basket-table__summary">
-        <p class="basket-table__total">Total <b>${{ totalPrice }}</b></p>
-        <p>Tax ${{ tax }}</p>
-    </div>
+    <tr>
+        <td colspan="5">
+            <div class="basket-table__summary">
+                <p class="basket-table__total">Total <b>${{ totalPrice }}</b></p>
+                <p>Tax ${{ tax }}</p>
+            </div>
+        </td>
+    </tr>
 </template>
 
 <style scoped>

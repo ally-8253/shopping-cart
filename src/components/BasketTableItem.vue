@@ -1,69 +1,87 @@
 <script setup>
-    defineProps({
-        item: {
-            type: Object,
+    const $props = defineProps({
+        name: {
+            type: String,
             required: true
         },
-        index: {
+        color:  {
+            type: String,
+            required: true
+        },
+        size:  {
+            type: String,
+            required: true
+        },
+        price:  {
             type: Number,
+            required: true
+        },
+        quantity:  {
+            type: Number,
+            required: true
+        },
+        imageUrl: {
+            type: String,
             required: true
         }
     })
 
     defineEmits(['decreaseItemQuantity', 'increaseItemQuantity', 'removeItem'])
 
-    const getItemSubtotal = (item) => {
-        return (item.quantity * item.price).toFixed(2)
+    const getItemSubtotal = () => {
+        return ($props.quantity * $props.price).toFixed(2)
     }
 </script>
 
 <template>
-    <td>
-        <div class="basket-item">
-        <div class="basket-item__image">
-            <img :src="item.imageUrl" :alt="item.name" />
-        </div>
-        <div class="basket-item__info">
-            <h2 class="basket-item__info-h2">{{ item.name }}</h2>
-            <p class="basket-item__info-p">Color: {{ item.color }}</p>
-            <p class="basket-item__info-p">Size: {{  item.size }}</p>
-        </div>
-        </div>
-    </td>
-    <td>
-        <p class="basket-item__price">${{ Number(item.price).toFixed(2) }}</p>
-    </td>
-    <td>
-        <div class="basket-item__quantity">
-        <button :disabled="item.quantity === 1" @click="$emit('decreaseItemQuantity', index)" class="quantity-button">–</button>
-        <input type="number" :value="item.quantity" min="1" />
-        <button @click="$emit('increaseItemQuantity', item)" class="quantity-button">+</button>
-        </div>
-    </td>
-    <td>
-        <p class="basket-item__price">${{ getItemSubtotal(item) }}</p>
-    </td>
-    <td>
-        <button @click="$emit('removeItem', index)" class="btn btn-delete" aria-label="Удалить">
-        <svg
-            class="w-6 h-6 text-gray-800 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            viewBox="0 0 24 24"
-        >
-            <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
-            />
-        </svg>
-        </button>
-    </td>
+    <tr>
+        <td>
+            <div class="basket-item">
+            <div class="basket-item__image">
+                <img :src="imageUrl" :alt="name" />
+            </div>
+            <div class="basket-item__info">
+                <h2 class="basket-item__info-h2">{{ name }}</h2>
+                <p class="basket-item__info-p">Color: {{ color }}</p>
+                <p class="basket-item__info-p">Size: {{  size }}</p>
+            </div>
+            </div>
+        </td>
+        <td>
+            <p class="basket-item__price">${{ Number(price).toFixed(2) }}</p>
+        </td>
+        <td>
+            <div class="basket-item__quantity">
+            <button :disabled="quantity === 1" @click="$emit('decreaseItemQuantity')" class="quantity-button">–</button>
+            <input type="number" :value="quantity" min="1" />
+            <button @click="$emit('increaseItemQuantity')" class="quantity-button">+</button>
+            </div>
+        </td>
+        <td>
+            <p class="basket-item__price">${{ getItemSubtotal() }}</p>
+        </td>
+        <td>
+            <button @click="$emit('removeItem')" class="btn btn-delete" aria-label="Удалить">
+            <svg
+                class="w-6 h-6 text-gray-800 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+                <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+                />
+            </svg>
+            </button>
+        </td>
+    </tr>
 </template>
 
 <style scoped>
